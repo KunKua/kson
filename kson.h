@@ -37,7 +37,7 @@ union JsonValue {
 	int valueInt;
 	double valueDouble;
 	char* valueString;
-	JSONNode ValueNode;
+	JSONNode valueNode;
 	NodeArray valueArray;
 };
 
@@ -53,9 +53,14 @@ struct JsonNode {
 
 };
 
+JSONNode createNode();
+
 JSONNode createNullNode(void);
 JSONNode createTrueNode(void);
 JSONNode createFalseNode(void);
+JSONNode createIntNode(int value);
+JSONNode createDoubleNode(double value);
+
 JSONNode createStringNode(const char* string);
 JSONNode createObjectNode(void);
 JSONNode createArrayNode(void);
@@ -76,6 +81,7 @@ void node_addArray(JSONNode node,const char* name,NodeArray array);
 
 JsonNode* kson_parse(const char* content,enum Encode encode);
 char* node_toString(int encode);
+JSONNode node_parseString(const char* str);
 
 #ifdef __cplusplus
 }
