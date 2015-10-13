@@ -1,8 +1,13 @@
 /**
- * A Tiny JSON library without parse function
+ * A Tiny JSON library 
  */
 #ifndef HEADER_KSON_H
 #define HEADER_KSON_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -19,7 +24,7 @@ enum Type {
     kNumberType = 6     //!< number
 };
 
-//current support
+//current support encode
 enum Encode {
 	utf8 = 1
 };
@@ -34,27 +39,34 @@ union JsonValue {
 	char* valueString;
 	JSONNode ValueNode;
 	NodeArray valueArray;
-}
+};
+
+typedef union JsonValue JSONValue;
 
 struct JsonNode {
-	JsonNode* _pre,*_next;
+	JSONNode _pre,_next;
 	JsonNode* _child; /* An array or object item will have a child pointer pointing to a chain of the items in the array/object. */
 
 	enum Type _type; 	/* The type of the item, as above. */
 	char* _nodeName;    /* The item's name string, if this item is the child of, or is in the list of subitems of an object. */
-	JsonValue _value; 	/* The item's value*/
+	JSONValue _value; 	/* The item's value*/
 
 };
 
-JSONNode createNode(int type);
 JSONNode createNullNode(void);
 JSONNode createTrueNode(void);
 JSONNode createFalseNode(void);
 JSONNode createStringNode(const char* string);
 JSONNode createObjectNode(void);
 JSONNode createArrayNode(void);
+    
+/* These utilities create an Array of count items. */
+extern NodeArray createIntArray(const int *numbers,int count);
+extern NodeArray createFloatArray(const float *numbers,int count);
+extern NodeArray createDoubleArray(const double *numbers,int count);
+extern NodeArray createStringArray(const char **strings,int count);
 
-void releaseNode(JSONNode node);
+void deleteNode(JsonNode* node);
 
 void node_addInt(JSONNode node,const char* name,int value);
 void node_addDounble(JSONNode node,const char* name,double value);
@@ -62,6 +74,11 @@ void node_addString(JSONNode node,const char* name,const char* string);
 void node_addObject(JSONNode node,const char* name,JSONNode object);
 void node_addArray(JSONNode node,const char* name,NodeArray array);
 
+JsonNode* kson_parse(const char* content,enum Encode encode);
 char* node_toString(int encode);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
